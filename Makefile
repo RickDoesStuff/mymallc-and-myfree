@@ -20,16 +20,17 @@ OBJECTS_MEMGRIND=$(SOURCES_MEMGRIND:.c=.o)
 # Default rule to build the memgrind
 memgrind: $(TARGET_MEMGRIND)
 	.\$(TARGET_MEMGRIND)
+	make clean
+
 # Debug rule to build the program memgrind with debug flags
 debug_memgrind: CFLAGS = $(DFLAGS)
 debug_memgrind: $(TARGET_MEMGRIND)
 	.\$(TARGET_MEMGRIND)
+	make clean
 
 # Rule for linking the program
 $(TARGET_MEMGRIND): $(OBJECTS_MEMGRIND)
 	$(CC) $(CFLAGS) -o $@ $^
-
-
 
 # List of source files for memtest
 SOURCES_MEMTEST=chunkhead.c chunk.c mymalloc.c memtest.c
@@ -51,7 +52,6 @@ debug_memtest: $(TARGET_MEMTEST)
 # Rule for linking the program
 $(TARGET_MEMTEST): $(OBJECTS_MEMTEST)
 	$(CC) $(CFLAGS) -o $@ $^
-	make clean
 
 # Rule for compiling source files to object files
 %.o: %.c %.h
