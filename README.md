@@ -1,11 +1,11 @@
 malloc() and free()
 ===================
 
-# Names and RUIDs
+## Names and RUIDs
 
 Ron Cohen (rc1456) and Enrico Aquino (eja97)
 
-# Testing Plan
+## Testing Plan
 
 For testing, we are planning on to check how our malloc() and free() works under different circumstances:
 
