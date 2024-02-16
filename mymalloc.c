@@ -93,9 +93,9 @@ void *mymalloc(size_t size, char *file, int line)
     }
 
     // Exit Program if no memory is requested
-    if(size == 0)
+    if(size <= 0)
     {
-        mallocError("To much memory requested!");
+        mallocError("Not enough memory requested!");
         return NULL; 
     }
 
