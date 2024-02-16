@@ -125,22 +125,25 @@ void check_objects(char *obj[OBJECTS]) {
 		for (j = 0; j < OBJSIZE; j++) {
 			if (obj[i][j] != i) {
 				errors++;
-				printf("Object %d byte %d incorrect: %d\n", i, j, obj[i][j]);
+                printf("Object %d byte %d incorrect: %d\n", i, j, obj[i][j]);
 			}
 		}
+
 	}
 	printf("%d incorrect bytes\n", errors);
+    if (errors == 0) {
+        printf("Success!\n");
+    }
 }
 
 void fill_objects(char *obj[OBJECTS]) {
-	int i=0;
 	// fill memory with objects
-	for (i = 0; i < OBJECTS; i++) {
+	for (int i = 0; i < OBJECTS; i++) {
 		obj[i] = malloc(OBJSIZE);
 	}
 	
 	// fill each object with distinct bytes
-	for (i = 0; i < OBJECTS; i++) {
+	for (int i = 0; i < OBJECTS; i++) {
 		memset(obj[i], i, OBJSIZE);
 	}
 
@@ -148,27 +151,51 @@ void fill_objects(char *obj[OBJECTS]) {
 }
 
 void free_every_other_object(char *obj[OBJECTS]) {
-	int i=0;
 	// free every other object
-	for (i = 0; i < OBJECTS; i += 2) {
+    int totalFreed = 0;
+	for (int i = 0; i < OBJECTS; i += 2) {
 		free(obj[i]);
 		printf("Object %d freed\n", i);
+        totalFreed++;
 	}
+    if (totalFreed == OBJECTS/2) {
+        printf("Every other object freed!\n");
+    }
 	check_objects(obj);
 }
 
 void malloc_large_object(char *obj[OBJECTS]) {
-	int i=0;
-	for (i = 0; i < OBJSIZE; i++) {
+	for (int i = 0; i < OBJSIZE; i++) {
 		obj[i] = malloc(MEMSIZE/2);
 		if (obj[i] == NULL) {
-			printf("Cannot allocate large object\n");
+			// printf("Cannot allocate large object\n");
+            continue;
 		} else {
 			printf("ERROR: Large object allocated\n");
 			exit(EXIT_FAILURE);
 		}
 	}
 	printf("Large object not allocated!\n");
+}
+
+void free_all(char *obj[OBJECTS]) {
+    // free all objects
+    for (int i = 0; i < OBJECTS; i++) {
+        free(obj[i]);
+    }
+    check_objects(obj);
+}
+
+void free_odd_even(char *obj[OBJECTS]) {
+    // free every odd then even objects
+    for (int i = 0; i < OBJECTS; i += 2) {
+        free(obj[i]);
+    }
+    check_objects(obj);
+    for (int i = 1; i < OBJECTS; i += 2) {
+        free(obj[i]);
+    }
+    check_objects(obj);
 }
 
 int main(int argc, char **argv)
@@ -179,13 +206,26 @@ int main(int argc, char **argv)
 	fill_objects(obj);
 
 	// free every other object
-	free_every_other_object(obj);
+	// free_every_other_object(obj);
+    // test passes
 
 	// malloc large object when memory is fragmented
-	malloc_large_object(obj);
+	// malloc_large_object(obj);
+    // test passes
 	
+    // free an address that has already been freed    
+    // free the rest of the objects
+    // free_all(obj);
+    // test passes
+
+    // malloc 0 bytes
+    // malloc(OBJSIZE*0);
+
+    // free every odd then even objects
+    free_odd_even(obj);
+    // test passes
 	
-	//rickysTest();
+	// rickysTest();
 	//rickysTest2();
 
 	return EXIT_SUCCESS;

@@ -99,9 +99,9 @@ void *mymalloc(size_t size, char *file, int line)
         return NULL; 
     }
 
-    DEBUG LOG("Requested size:%u\n", size);
+    DEBUG LOG("Requested size:%llu\n", size);
     size = (size+7) & ~7;
-    DEBUG LOG("Changed to size:%u\n\n", size);
+    DEBUG LOG("Changed to size:%llu\n\n", size);
 
 
     // Exit Program if size requested is bigger than maximum size
@@ -133,7 +133,7 @@ void *mymalloc(size_t size, char *file, int line)
         // if current chunk is the exact size
         else if (((chunkhead *)cursor)->size == size)
         {
-            DEBUG LOG("exact size\t\tcursor->size{%i}==size{%u}\n", ((chunkhead *)cursor)->size, size);
+            DEBUG LOG("exact size\t\tcursor->size{%i}==size{%llu}\n", ((chunkhead *)cursor)->size, size);
             bestFitPointer = cursor;
             bestFitSize = size;
             break;

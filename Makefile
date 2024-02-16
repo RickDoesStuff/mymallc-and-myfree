@@ -72,5 +72,5 @@ clean:
 chunkhead.o: chunkhead.c chunkhead.h
 chunk.o: chunk.c chunk.h
 mymalloc.o: mymalloc.c mymalloc.h
-memtest.o: memtest.c memtest.h
+memtest.o: memtest.c
 memgrind.o: memgrind.c memgrind.h # Add this line if memgrind.h exists and is used
