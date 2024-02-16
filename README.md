@@ -16,5 +16,6 @@ For testing, we are planning on to check how our malloc() and free() works under
 - Free Fragmented Memory/free an address that as already been freed 
     (Expected results: Should throw errors but should also free up the rest of the chunks)
 
-- Free every even, then odd chunk
-    (Expected results: No errors)
+- malloc 0 bytes (Expected result: Error, not enough memory requested)
+
+- Free every even, then odd chunk (Expected results: No errors)
