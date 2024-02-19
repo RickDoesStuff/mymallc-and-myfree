@@ -11,11 +11,11 @@ For testing, we are planning on to check how our malloc() and free() works under
 
 - Filling up the chunks with a distinct size freeing every other object and then
     try to allocate a large chunk of memory
-    (Expected result: Throwing an error)
+    (Expected result: Throw an error)
 
-- Free Fragmented Memory/free an address that as already been freed 
-    (Expected results: Should throw errors but should also free up the rest of the chunks)
+- Free an address that has already been freed
+    (Expected result: Throw an error)
 
 - malloc 0 bytes (Expected result: Error, not enough memory requested)
 
-- Free every even, then odd chunk (Expected results: No errors)
+- Free every even, then odd chunk (Expected result: No errors)
