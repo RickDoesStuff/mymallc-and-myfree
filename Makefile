@@ -66,7 +66,7 @@ memgrind.o: memgrind.c
 
 # Rule for cleaning up
 clean:
-	del -f $(OBJECTS_MEMGRIND) $(OBJECTS_MEMTEST)
+	rm $(OBJECTS_MEMGRIND) $(OBJECTS_MEMTEST)
 
 # Dependencies
 chunkhead.o: chunkhead.c chunkhead.h
