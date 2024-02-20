@@ -12,7 +12,7 @@ TARGET_MEMTEST=memtest
 TARGET_MEMGRIND=memgrind
 
 # List of source files for memgrind
-SOURCES_MEMGRIND=chunkhead.c chunk.c mymalloc.c memgrind.c
+SOURCES_MEMGRIND=chunkhead.c mymalloc.c memgrind.c
 
 # Object files to generate for memgrind
 OBJECTS_MEMGRIND=$(SOURCES_MEMGRIND:.c=.o)
@@ -33,7 +33,7 @@ $(TARGET_MEMGRIND): $(OBJECTS_MEMGRIND)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # List of source files for memtest
-SOURCES_MEMTEST=chunkhead.c chunk.c mymalloc.c memtest.c
+SOURCES_MEMTEST=chunkhead.c mymalloc.c memtest.c
 
 # Object files to generate for memgrind
 OBJECTS_MEMTEST=$(SOURCES_MEMTEST:.c=.o)
@@ -70,7 +70,6 @@ clean:
 
 # Dependencies
 chunkhead.o: chunkhead.c chunkhead.h
-chunk.o: chunk.c chunk.h
 mymalloc.o: mymalloc.c mymalloc.h
 memtest.o: memtest.c
 memgrind.o: memgrind.c memgrind.h # Add this line if memgrind.h exists and is used

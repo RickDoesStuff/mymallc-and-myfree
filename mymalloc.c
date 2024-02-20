@@ -3,7 +3,7 @@
 #include <string.h>
 #include "mymalloc.h"
 
-#include "chunk.h"
+#include "chunkhead.h"
 
 #define MEMLENGTH 512
 #define HEADER 8
@@ -85,10 +85,10 @@ void *mymalloc(size_t size, char *file, int line)
     if (((chunkhead *)HEAP)->size == 0 && ((chunkhead *)HEAP)->inuse == 0) 
     {
         // init heap
-        struct chunk tempchunk={{4096 - 8, 0}, NULL};
-        struct chunk *metadata = (chunk *)HEAP;
+        struct chunkhead tempchunk={4096 - 8, 0};
+        struct chunkhead *metadata = (chunkhead *)HEAP;
         *metadata = tempchunk; // put meta data at the start of the heap
-        DEBUG LOG("init heap::inuse=%i::size=%i", metadata->head.inuse, metadata->head.size);
+        DEBUG LOG("init heap::inuse=%i::size=%i", metadata->inuse, metadata->size);
         DEBUG viewHeap();
     }
 
@@ -99,9 +99,9 @@ void *mymalloc(size_t size, char *file, int line)
         return NULL; 
     }
 
-    DEBUG LOG("Requested size:%lu\n", size);
+    DEBUG LOG("Requested size:%i\n", (int)size);
     size = (size+7) & ~7;
-    DEBUG LOG("Changed to size:%lu\n\n", size);
+    DEBUG LOG("Changed to size:%i\n\n", (int)size);
 
 
     // Exit Program if size requested is bigger than maximum size
@@ -133,7 +133,7 @@ void *mymalloc(size_t size, char *file, int line)
         // if current chunk is the exact size
         else if (((chunkhead *)cursor)->size == size)
         {
-            DEBUG LOG("exact size\t\tcursor->size{%i}==size{%lu}\n", ((chunkhead *)cursor)->size, size);
+            DEBUG LOG("exact size\t\tcursor->size{%i}==size{%i}\n", ((chunkhead *)cursor)->size, (int)size);
             bestFitPointer = cursor;
             bestFitSize = size;
             break;
@@ -148,8 +148,9 @@ void *mymalloc(size_t size, char *file, int line)
 
             DEBUG LOG("cursor+8+((chunkhead *)cursor)->size{%p}\n", (cursor + (((chunkhead *)cursor)->size) + 8));
         }
-        cursor+=8+((chunkhead *)cursor)->size;
-        continue;
+
+        // move cursor forward
+        cursor+=8+((chunkhead *)cursor)->size; 
     }
     DEBUG LOG("\n\nExited Search Loop\n\n");
 
@@ -167,13 +168,10 @@ void *mymalloc(size_t size, char *file, int line)
 
     
     // quick way to calculate the remaining free bytes in the chunk that was best fit
-    // 4088 - 32
-    // 4056 start of next meta
-    // 4048 start of next free payload
-    // 
-    
-
+    // payload of free chunk - requested size - 8 for the head
     int amtOfFreeLeftInChunk = bestFitSize - (size) - 8;
+
+    // if the next chunk would have 0 bytes, give the 8 extra bytes to the chunk the user requested
     if (amtOfFreeLeftInChunk==0)
     {
         size+=8; // give the user the 8 extra bytes
@@ -190,31 +188,21 @@ void *mymalloc(size_t size, char *file, int line)
     DEBUG LOG("Created currentchunk meta data\ninuse{%i}::size{%i}::pointer{%p}\n",
                             currentmetadata->inuse,currentmetadata->size,(char *)currentmetadata);
     DEBUG LOG("CREATED CURRENT CHUNK META DATA\n");
-    //DEBUG viewHeap();
-    // cursorsize-size+bestpointersize    
-    // bestFitPointer+
-    // HEAP+distanceintoheap=cursor
-
+ 
+ 
+ 
     // for trailing chunk
     // ex: 
     // heap = 100000
     // bestFitPointer = 100400 
     // this means we are 400 bytes into the heap
-    // we need to subtract that from 4096 to see how much remaining data is in the heap
-    // then subtract 8 for the new meta data
-
-    // THIS WON'T WORK WHEN WE START FREEING MEMORY THAT IS HAS IN USE CHUNKS AFTER IT!!
-    // we will get override errors bc we don't know how much memory is actually free after it is allocated
 
     // distanceIntoHeap how big the last chunk was
     // ((size+8)+(size2+8)+(size3+8)...)
     // ex bestFitPointer(100040) - HEAP(100010) + size(payload size) + metadata size(8)
-
-
-
     int distanceIntoHeap = (bestFitPointer-HEAP)+size+8; 
-    DEBUG LOG("distanceIntoHeap:%i\n",distanceIntoHeap);
 
+    DEBUG LOG("distanceIntoHeap:%i\n",distanceIntoHeap);
     DEBUG LOG("amtOfFreeLeftInChunk:%i\n",amtOfFreeLeftInChunk);
 
     if(amtOfFreeLeftInChunk==0) {
@@ -230,11 +218,11 @@ void *mymalloc(size_t size, char *file, int line)
         // we need it to start at the first byte of the new chunk
         struct chunkhead *trailingmetadata = (chunkhead *) (HEAP+distanceIntoHeap);
 
-        *trailingmetadata = temptrailingchunk; // put meta data after current chunk / start of next chunk
+        // put meta data after current chunk / start of next chunk
+        *trailingmetadata = temptrailingchunk; 
 
         DEBUG LOG("trailing metadata::inuse=%i::size=%i::address=%p\n",
                             trailingmetadata->inuse,trailingmetadata->size,(char *)trailingmetadata);
-        
         DEBUG LOG("HEAP+distanceIntoHeap::inuse=%i::size=%i::address=%p\n",
                             ((chunkhead *)HEAP+distanceIntoHeap)->inuse,
                             ((chunkhead *)HEAP+distanceIntoHeap)->size,
@@ -266,7 +254,7 @@ void myfree(void *ptr, char *file, int line) {
     // search the heap 
     while(cursor < (HEAP+(MEMLENGTH*8)-8)) 
     {
-        // if the cursor  doesn't reach the correct chunk, increase counter 
+        // if the cursor doesn't reach the correct chunk, increase counter 
         if(cursor+8 != ptr) 
         {
             prevChunkCursor = cursor;
@@ -286,7 +274,7 @@ void myfree(void *ptr, char *file, int line) {
         }
 
 
-        // set the nextChunkCurson as the curson + cursonsize + 8
+        // set the nextChunkCursor as the cursor + payload size + 8
         char *nextChunkCursor = cursor + (((chunkhead *) cursor)->size+8);
         // coallese with next chunk if it is free and next chunk is inside of the heap
         if (((chunkhead*) nextChunkCursor)->inuse==0 && nextChunkCursor < HEAP+4096) {
@@ -317,7 +305,10 @@ void myfree(void *ptr, char *file, int line) {
             DEBUG LOG("prev chunk not free, changing current chunk to free and size is: %i\n",ptempchunkhead->size);
 
         }
+
+        // reached end of heap
         DEBUG viewHeap();
+        mallocError("Free Error: object not found");
         return;
     }
 

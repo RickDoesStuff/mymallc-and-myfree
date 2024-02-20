@@ -132,9 +132,9 @@ void perfTest5()
 int main(int argc, char **argsv) {
 
     // uncomment the test you want to run
-    //perfTest1();
-    //perfTest2();
-    //perfTest3();
+    perfTest1();
+    perfTest2();
+    perfTest3();
     //perfTest4();
     //perfTest5();
 
