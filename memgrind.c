@@ -26,7 +26,7 @@ int main(int argc, char **argsv) {
         }
     }
     gettimeofday(&stop, NULL);
-    totalTime = ((stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec)/1000;
+    totalTime = ((stop.tv_sec - start.tv_sec) * 1000000000 + stop.tv_usec/1000 - start.tv_usec/1000);
     printf("\nCreate 256 chunks and free 256 chunks\ntook %lu ms\nAvg Time: %f ms\n", totalTime, ((float)totalTime)/(AVGRUNCOUNT));
 
 
@@ -49,7 +49,7 @@ int main(int argc, char **argsv) {
         }
     }
     gettimeofday(&stop, NULL);
-    totalTime = ((stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec)/1000;
+    totalTime = ((stop.tv_sec - start.tv_sec) * 1000000000 + stop.tv_usec/1000 - start.tv_usec/1000);
     printf("\ncreate 256 chunks and free 256 chunks (first free the even then the odd)\ntook %lu ms\nAvg Time: %f ms\n", totalTime, ((float)totalTime)/(AVGRUNCOUNT));
 
 
