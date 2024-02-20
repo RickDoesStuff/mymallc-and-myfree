@@ -33,18 +33,37 @@ Another design choice I made was to exit the program when mymalloc() has an erro
     We malloc 1 large chunk and free the large chunk.
     A basic test to see how long the best case scenario would take.
 - Performance Test 4:
-    Test how long it takes for our free() to tell us that we are trying to free an invalid pointer.
+    Test how long it takes myfree() to tell us that we are trying to free an already free'd pointer.
 - Performance Test 5:
-    WIP
+    Test how long it takes myfree() to tell us that the pointer we provided is not in the heap.
 
 ## time differences between mymalloc and the real malloc
+We loop through each test 500 times and then get the average time.
+- Performance Test 1:
+    mymalloc(): 0.116ms
+    real malloc(): 0.01ms
 
-## Testing Cases
+- Performance Test 2:
+    mymalloc(): 0.15ms
+    real malloc(): 0.008ms
+
+- Performance Test 3:
+    mymalloc(): 0.0ms
+    real malloc(): 0.0ms
+
+- Performance Test 4:
+    mymalloc(): 0.714ms
+    real malloc(): 0.0ms
+
+- Performance Test 5:
+    mymalloc(): 0.578ms
+    real malloc(): 0.0ms
+
+## Mem Testing Cases
 For testing, we are planning on to check how our mymalloc() and myfree() works under different circumstances:
 
 - Filling up the chunks with a distinct size freeing every other object and then
     try to allocate a large chunk of memory (Expected result: Throw an error)
-
 
 - Free an address that has already been freed (Expected result: Throw an error)
     We free a pointer given to us from malloc and then try to free the same pointer

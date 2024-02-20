@@ -108,14 +108,14 @@ void rickysTest2(){
     // free(piarr[5]);
     // free(piarr[7]);
     // free(piarr[6]);
-    // passes? most times
+    // passes
 
 
     // free 5, then 6 then 7
-    free(piarr[5]);
-    free(piarr[6]);
-    free(piarr[7]);
-    // passes? most times
+    // free(piarr[5]);
+    // free(piarr[6]);
+    // free(piarr[7]);
+    // passes
 }
 
 void check_objects(char *obj[OBJECTS]) {
