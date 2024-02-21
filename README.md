@@ -2,10 +2,20 @@ malloc() and free()
 ===================
 
 ## Names and RUIDs
-
 Ron Cohen (rc1456) and Enrico Aquino (eja97)
 
 ## How to run the program
+type the following into the terminal on the ilab
+tar -xf p1.tar
+cd P1
+make
+./memgrind
+
+to run the memtest
+tar -xf p1.tar
+cd P1
+make memtest
+./memtest
 
 
 ## Testing Plan
