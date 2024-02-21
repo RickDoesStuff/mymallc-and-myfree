@@ -3,7 +3,7 @@
 #include <sys/time.h>
 #include "mymalloc.h"
 
-#define AVGRUNCOUNT 500.0
+#define AVGRUNCOUNT 50.0
     
 
 /**
