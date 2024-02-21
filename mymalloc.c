@@ -276,25 +276,23 @@ void myfree(void *ptr, char *file, int line) {
 
         // set the nextChunkCursor as the cursor + payload size + 8
         char *nextChunkCursor = cursor + (((chunkhead *) cursor)->size+8);
-        // coallese with next chunk if it is free and next chunk is inside of the heap
+        // coalese with next chunk if it is free and next chunk is inside of the heap
         if (((chunkhead*) nextChunkCursor)->inuse==0 && nextChunkCursor < HEAP+4096) {
             // increase the current chunk's payload by the next chunks payload + the meta data size
             ((chunkhead *)cursor)->size += ((chunkhead *) nextChunkCursor)->size + 8;
             DEBUG LOG("\nCoalescing w/ next chunk\nsize free'd: %i\n",((chunkhead *)cursor)->size);
         }
 
-        // coallese with previous free chunk as long as current cursor is not the first chunk
+        // coalese with previous free chunk as long as current cursor is not the first chunk
         // this also makes sure that the current chunk is not at or the before the start of the HEAP
         if (((chunkhead *)prevChunkCursor)->inuse==0 && cursor!=HEAP)
         { 
             // increase the previous chunk's payload by the current chunk's payload + the meta data size
             ((chunkhead *)prevChunkCursor)->size += ((chunkhead *)cursor)->size+8;
             DEBUG LOG("\nCoalescing w/ previous chunk\nsize free'd: %i\n",((chunkhead *)prevChunkCursor)->size);
-
+            return;
         } else {
-
             // if the prev chunk is not free make a new free chunk
-
             // create a chunkhead that has the same size payload as before, but set it to free
             struct chunkhead tempchunkhead={((chunkhead *)cursor)->size,0};
             // create a chunk pointer to the cursor's position
@@ -303,12 +301,12 @@ void myfree(void *ptr, char *file, int line) {
             // overwrite the chunkhead that had data, with the free chunk + free chunk meta information
             *ptempchunkhead = tempchunkhead; 
             DEBUG LOG("prev chunk not free, changing current chunk to free and size is: %i\n",ptempchunkhead->size);
+            DEBUG viewHeap();
+            return;
 
         }
 
         // reached end of heap
-        DEBUG viewHeap();
-        mallocError("Free Error: object not found");
         return;
     }
 

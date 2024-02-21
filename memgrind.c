@@ -1,9 +1,7 @@
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <sys/time.h>
-//#include "mymalloc.h"
-#include <windows.h>
-
+#include "mymalloc.h"
 
 #define AVGRUNCOUNT 500.0
     
