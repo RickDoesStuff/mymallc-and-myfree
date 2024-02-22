@@ -1,5 +1,6 @@
 malloc() and free()
 ===================
+For Rutgers CS214 Systems Programming Project 1
 
 ## Names and RUIDs
 Ron Cohen (rc1456) and Enrico Aquino (eja97)
